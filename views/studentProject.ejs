@@ -1,8 +1,38 @@
 <%- include("partials/header") %>
-<h1>
-    Project List
-</h1>
-<a href="/logout">
-    Logout
-</a>
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-4">Project List</h1>
+        <hr class="my-4">
+        <p><strong>NOTE:</strong> Submit Your Project remotes in the form of zip files</p>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="/projects/new" role="button">New Project</a>
+        </p>
+    </div>
+    <a href="/logout">
+        Logout
+    </a>
+    <%if(files){%>
+        <!-- <p>Files are present</p> -->
+        <%files.forEach(function(file){%>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title"><%= file.filename %></h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Project Name/Project Author</h6>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <form action="/projects/<%= file._id %>?_method=DELETE" method="post">
+                        <button class="btn btn-danger btn-block mt-4">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <%})%>
+    <%}else{%>
+        <p>No Files submitted</p>
+    <%}%>
+
+</div>
+
+
+
 <%- include("partials/footer") %>

@@ -1,3 +1,5 @@
+const middlewareObj = require("./middleware/index");
+
 var express                           = require("express"),
     app                               = express(),
     bodyParser                        = require("body-parser"),
@@ -6,7 +8,13 @@ var express                           = require("express"),
     LocalStrategy                     = require('passport-local'),
     flash                             = require("connect-flash"),
     Student                           = require("./models/student"),
-    middleware                        = require("./middleware/index");
+    middleware                        = require("./middleware/index"),
+    path                              = require("path"),
+    crypto                            = require("crypto"),
+    multer                            = require("multer"),
+    GridFsStorage                     = require("multer-gridfs-storage"),
+    Grid                              = require("gridfs-stream"),
+    methodOverride                    = require("method-override");
 
 
 //=================================================================================================
@@ -43,23 +51,6 @@ app.use(function(req, res, next){
     next();  
 });
 
-
-//=================================================================================================
-//= = = = = = = = = = = = = = = = = = = = = = =  Setting up mongoose = = = = = = = = = = = = = = = 
-//=================================================================================================
-
-
-try {
-    mongoose.connect("mongodb://localhost/internship_project", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true
-      }, () =>
-      console.log("connected"));
-  } catch (error) {
-    console.log(error);
-  }
-
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Setting up the app = = = = = = = = = = = = = = = =  
 //=================================================================================================
@@ -67,6 +58,59 @@ try {
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
+app.use(bodyParser.json());
+
+
+//=================================================================================================
+//= = = = = = = = = = = = = = = = = = = = = = =  Setting up mongoose = = = = = = = = = = = = = = = 
+//=================================================================================================
+
+
+try {
+    mongoose.connect("mongodb://localhost/internship_project",{
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+    }, () =>{
+            console.log("connected")
+        });
+    
+} catch (error) {
+    console.log(error);
+  }
+
+const conn = mongoose.connection;
+let gfs;
+conn.once('open', ()=>{
+    //Init Stream
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads');
+    
+})
+
+const storage = new GridFsStorage({
+url: "mongodb://localhost/internship_project",
+options: {useUnifiedTopology: true},
+file: (req, file) => {
+    return new Promise((resolve, reject) => {
+    crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+        return reject(err);
+        }
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        const fileInfo = {
+        filename: filename,
+        bucketName: 'uploads'
+        };
+        resolve(fileInfo);
+    });
+    });
+}
+});
+const upload = multer({ storage });
+
+
 
 
 
@@ -83,8 +127,65 @@ app.get("/", middleware.isNotLoggedIn, (req, res)=>{
 //=================================================================================================
 
 app.get("/projects",middleware.isLoggedIn, (req, res)=>{
-    res.render("studentProject")
+    gfs.files.find().toArray((err, files)=>{
+        //Check if any files 
+        if(!files||files.length === 0){
+            res.render("studentProject", {files: false});
+        }else{
+            // files.map(file => {
+            //     if(file.contentType === 'image/jpeg' || file.contentType === "image/png"){
+            //         file.isImage = true;
+            //     }else{
+            //         file.isImage = false;
+            //     }
+            // });
+            res.render("studentProject", {files: files});
+        }
+    })
+    // res.render("studentProject")
+    // res.send("Welcome home")
 });
+
+//= = = = = = = = = = = = = = = = = = = = = = =  Create New Project = = = = = = = = = = = = = = = = =  
+app.get("/projects/new", middleware.isLoggedIn, (req, res)=>{
+    res.render("createProjects");
+})
+
+//= = = = = = = = = = = = = = = = = = = = = = =  Upload New Project = = = = = = = = = = = = = = = = =  
+
+app.post("/projects", middleware.isLoggedIn,upload.single('file'), (req, res)=>{
+    res.redirect("/projects");
+})
+
+// = = = = = = = = = = = = = = = = = = = = = = =  Render Image in Project = = = = = = = = = = = = = = = = = 
+app.get('/projects/image/:filename', (req, res)=>{
+    gfs.files.findOne({filename: req.params.filename}, (err, file)=>{
+        //Check if any files 
+        if(!file||file.length === 0){
+            console.log("No files found")
+        }
+        //check if image
+        if(file.contentType === 'image/jpeg' || file.contentType === "image/png"){
+            var readstream = gfs.createReadStream(file.filename);
+            readstream.pipe(res);
+        }else{
+            // res.status(404).json({err: "not an image"})
+            console.log("not an image")
+        }
+    })
+}) 
+
+// = = = = = = = = = = = = = = = = = = = = = = =  Delete Project = = = = = = = = = = = = = = = = = 
+
+app.delete('/projects/:id', (req, res)=>{
+    gfs.remove({_id: req.params.id, root: 'uploads'}, (err, gridStore)=>{
+        if(err){
+            console.log(err)
+        }
+        res.redirect("/");
+    })
+})
+
 
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Payment Portal = = = = = = = = = = = = = = = = =  
@@ -123,7 +224,7 @@ app.post("/register", middleware.isNotLoggedIn, function(req, res){
             passport.authenticate("local")(req, res, function(){
                 req.flash("success", "Welcome " + student.username);
                 res.redirect("/paymentPortal");
-                console.log(student)
+                // console.log(student)
             });
         };
     });
