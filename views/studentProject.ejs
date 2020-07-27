@@ -12,13 +12,11 @@
         Logout
     </a>
     <%if(currentUser){%>
-        <p>currentUser present</p>
+        <%console.log(currentUser)%>
         <%currentUser.projects.forEach(function(project){%>
-            <p>Projects present</p>
             <%if(files){%>
-                <p>Files are present</p>
                     <%files.forEach(function(file){%>
-                        <%if(file.id == project.projectId)%>
+                        <%if(file.id === project._id){%>
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
 

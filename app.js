@@ -1,4 +1,5 @@
 const middlewareObj = require("./middleware/index");
+const { use } = require("passport");
 
 var express                           = require("express"),
     app                               = express(),
@@ -127,7 +128,6 @@ app.get("/", middleware.isNotLoggedIn, (req, res)=>{
 //=================================================================================================
 
 app.get("/projects",middleware.isLoggedIn, (req, res)=>{
-    var currentUser = req.user;
     gfs.files.find().toArray((err, files)=>{
         //Check if any files 
         if(!files||files.length === 0){
@@ -140,7 +140,15 @@ app.get("/projects",middleware.isLoggedIn, (req, res)=>{
             //         file.isImage = false;
             //     }
             // });
-            res.render("studentProject", {files: files, currentUser: currentUser});
+            Student.findById(req.user._id, function(err, currentUser){
+                if(err){
+                    console.log(err)
+                }else{        
+                    console.log(currentUser)
+                    res.render("studentProject", {files: files, currentUser: currentUser});
+                }
+            })
+            
         }
     })
     // res.render("studentProject")
@@ -162,10 +170,31 @@ app.post("/projects", middleware.isLoggedIn,upload.single('file'), (req, res)=>{
         projectName: req.body.projectName,
         projectId : file.id
     }
-    user.projects.push(projectDetail); 
+    // console.log(user);
+    user.projects.push(projectDetail);
+    console.log(user);
+    // Student.findByIdAndUpdate(req.user._id, req.user.projects = user.projects,function(err, updatedUser){
+    //     if(err){
+    //         console.log(err)
+    //     }else{
+            
+    //         console.log(updatedUser);
+    //     }
+    // })
+    Student.findById(req.user._id, function(err, updateUser){
+        if(err){
+            console.log(err)
+        }else{        
+            updateUser.projects.push(projectDetail)
+            console.log(updateUser);
+            updateUser.save();
+            res.redirect("/projects");
+        }
+    })
+
     // req.user.projects.push(file.id)
     // console.log(req.user.projects)
-    res.redirect("/projects");
+    
 })
 
 // = = = = = = = = = = = = = = = = = = = = = = =  Render Image in Project = = = = = = = = = = = = = = 
