@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
-  },
+    "dev": "nodemon app.js"  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Yashvardhan777/SNTI_VT_Program.git"

@@ -127,10 +127,11 @@ app.get("/", middleware.isNotLoggedIn, (req, res)=>{
 //=================================================================================================
 
 app.get("/projects",middleware.isLoggedIn, (req, res)=>{
+    var currentUser = req.user;
     gfs.files.find().toArray((err, files)=>{
         //Check if any files 
         if(!files||files.length === 0){
-            res.render("studentProject", {files: false});
+            res.render("studentProject", {files: false, currentUser: currentUser});
         }else{
             // files.map(file => {
             //     if(file.contentType === 'image/jpeg' || file.contentType === "image/png"){
@@ -139,7 +140,7 @@ app.get("/projects",middleware.isLoggedIn, (req, res)=>{
             //         file.isImage = false;
             //     }
             // });
-            res.render("studentProject", {files: files});
+            res.render("studentProject", {files: files, currentUser: currentUser});
         }
     })
     // res.render("studentProject")
@@ -154,10 +155,20 @@ app.get("/projects/new", middleware.isLoggedIn, (req, res)=>{
 //= = = = = = = = = = = = = = = = = = = = = = =  Upload New Project = = = = = = = = = = = = = = = = =  
 
 app.post("/projects", middleware.isLoggedIn,upload.single('file'), (req, res)=>{
+    var file = req.file;
+    console.log(file);
+    var user = req.user;
+    var projectDetail = {
+        projectName: req.body.projectName,
+        projectId : file.id
+    }
+    user.projects.push(projectDetail); 
+    // req.user.projects.push(file.id)
+    // console.log(req.user.projects)
     res.redirect("/projects");
 })
 
-// = = = = = = = = = = = = = = = = = = = = = = =  Render Image in Project = = = = = = = = = = = = = = = = = 
+// = = = = = = = = = = = = = = = = = = = = = = =  Render Image in Project = = = = = = = = = = = = = = 
 app.get('/projects/image/:filename', (req, res)=>{
     gfs.files.findOne({filename: req.params.filename}, (err, file)=>{
         //Check if any files 
@@ -213,7 +224,7 @@ app.post("/loginStudent",middleware.isNotLoggedIn, passport.authenticate("local"
 //=================================================================================================
 
 app.post("/register", middleware.isNotLoggedIn, function(req, res){
-    var newStudent = new Student({username: req.body.username, email: req.body.email, guideNo: req.body.guideNo});
+    var newStudent = new Student({username: req.body.username, email: req.body.email, guideNo: req.body.guideNo, projects: []});
     Student.register(newStudent, req.body.password, function(err, student){
         if(err || !student){
             console.log(err);

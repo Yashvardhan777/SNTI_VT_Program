@@ -11,24 +11,33 @@
     <a href="/logout">
         Logout
     </a>
-    <%if(files){%>
-        <!-- <p>Files are present</p> -->
-        <%files.forEach(function(file){%>
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title"><%= file.filename %></h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Project Name/Project Author</h6>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <form action="/projects/<%= file._id %>?_method=DELETE" method="post">
-                        <button class="btn btn-danger btn-block mt-4">
-                            Delete
-                        </button>
-                    </form>
-                </div>
-            </div>
+    <%if(currentUser){%>
+        <p>currentUser present</p>
+        <%currentUser.projects.forEach(function(project){%>
+            <p>Projects present</p>
+            <%if(files){%>
+                <p>Files are present</p>
+                    <%files.forEach(function(file){%>
+                        <%if(file.id == project.projectId)%>
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+
+                                    <h5 class="card-title"><%= project.projectName %></h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">Project GuideNumber: <%= currentUser.guideNo %></h6>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                    <form action="/projects/<%= file._id %>?_method=DELETE" method="post">
+                                        <button class="btn btn-danger btn-block mt-4">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        <%}%>
+                    <%})%>
+            <%}else{%>
+                <p>No Files submitted</p>
+            <%}%>
         <%})%>
-    <%}else{%>
-        <p>No Files submitted</p>
     <%}%>
 
 </div>
