@@ -168,7 +168,7 @@ app.post("/projects", middleware.isLoggedIn,upload.single('file'), (req, res)=>{
     var user = req.user;
     var projectDetail = {
         projectName: req.body.projectName,
-        projectId : file.id
+        projectId  : file.id
     }
     // console.log(user);
     user.projects.push(projectDetail);

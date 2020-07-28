@@ -4,7 +4,7 @@ var passportLocalMongoose = require("passport-local-mongoose");
 
 var projectSchema = new mongoose.Schema({
     projectName: String,
-    projectId : mongoose.Schema.Types.ObjectId
+    projectId  : mongoose.Schema.Types.ObjectId
 })
 
 var studentSchema = new mongoose.Schema({
