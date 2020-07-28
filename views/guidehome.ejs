@@ -10,22 +10,19 @@
 </head>
 <body>
 
-    <a href="/guide">
-        login as a guide
-    </a>
+    
     <div class="container" id="container">
         <div class="form-container sign-up-container">
-            <form action="/register" method="POST">
+            <form action="/guide/register" method="POST">
                 <h1>Register</h1>
                 <input type="text" placeholder="Name" name="username"/>
-                <input type="email" placeholder="Email" name="email"/>
                 <input type="text" placeholder="Guide Number" name="guideNo">
                 <input type="password" placeholder="Password" name="password"/>
                 <button>Sign Up</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
-            <form action="/loginStudent" method="POST">
+            <form action="/guide/login" method="POST">
                 <h1>Login</h1>
                 <input type="text" placeholder="Name" name="username"/>
                 <input type="password" placeholder="Password" name="password" />

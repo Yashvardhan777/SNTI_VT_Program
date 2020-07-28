@@ -20,7 +20,7 @@ var guideSchema = new mongoose.Schema({
 })
 
 guideSchema.plugin(passportLocalMongoose, {
-    selectFields: "username password students"
+    selectFields: "username password guideNo students"
 });
 
 module.exports = mongoose.model("Guide", guideSchema);

@@ -287,22 +287,30 @@ app.get("/logout", function(req, res){
 
 
 //=================================================================================================
-//= = = = = = = = = = = = = = = = = = = = = = =  Login Page = = = = = = = = = = = = = = = = = = = =
+//= = = = = = = = = = = = = = = = = = = = = = =  Home Page = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
+
+app.get("/guide", (req, res)=>{
+    res.render("guidehome");
+})
 
 
 //=================================================================================================
-//= = = = = = = = = = = = = = = = = = = = = = =  Registeration Page Page = = = = = = = = = = = = = 
+//= = = = = = = = = = = = = = = = = = = = = = =  Projects = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
+
+app.get("/guide/projects", (req, res)=>{
+    res.render("guideProject")
+})
 
 
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Login = = = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
 
-app.post("/loginGuide",middleware.isNotLoggedIn, passport.authenticate("local", {
+app.post("/guide/login",middleware.isNotLoggedIn, passport.authenticate("local", {
     successRedirect: "/guide/projects",
-    failureRedirect: "/",
+    failureRedirect: "/guide",
     failureFlash:"Inavlid username or password"
 }), (req, res)=>{
 });
@@ -311,19 +319,20 @@ app.post("/loginGuide",middleware.isNotLoggedIn, passport.authenticate("local", 
 //= = = = = = = = = = = = = = = = = = = = = = =  Register = = = = = = = = = = = = = = = = = = = = = 
 //=================================================================================================
 
-app.post("/register", middleware.isNotLoggedIn, function(req, res){
-    var newGuide = new Guide({username: req.body.username, students:[]});
+app.post("/guide/register", middleware.isNotLoggedIn, function(req, res){
+    var newGuide = new Guide({username: req.body.username, guideNo: req.body.guideNo,students:[]});
     Guide.register(newGuide, req.body.password, function(err, guide){
         if(err || !guide){
             console.log(err);
             req.flash("error", err.message);
-            res.redirect("/");
+            res.redirect("/guide");
             
         } else{
             passport.authenticate("local")(req, res, function(){
+                console.log(guide)
                 req.flash("success", "Welcome " + guide.username);
                 res.redirect("/guide/projects");
-                console.log(guide)
+                
             });
         };
     });
