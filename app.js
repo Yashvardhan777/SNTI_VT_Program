@@ -1,6 +1,3 @@
-const middlewareObj = require("./middleware/index");
-const { use } = require("passport");
-
 var express                           = require("express"),
     app                               = express(),
     bodyParser                        = require("body-parser"),
@@ -9,7 +6,7 @@ var express                           = require("express"),
     LocalStrategy                     = require('passport-local'),
     flash                             = require("connect-flash"),
     Student                           = require("./models/student"),
-    Guide                           = require("./models/guide"),
+    Guide                             = require("./models/guide"),
     middleware                        = require("./middleware/index"),
     path                              = require("path"),
     crypto                            = require("crypto"),
@@ -41,6 +38,9 @@ passport.use(new LocalStrategy(Student.authenticate()));
 passport.serializeUser(Student.serializeUser());
 passport.deserializeUser(Student.deserializeUser());
 
+passport.use("guidelocal", new LocalStrategy(Guide.authenticate()));
+passport.serializeUser(Guide.serializeUser());
+passport.deserializeUser(Guide.deserializeUser());
  
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Setting up Flash Message = = = = = = = = = = = = =
@@ -265,6 +265,17 @@ app.post("/register", middleware.isNotLoggedIn, function(req, res){
         } else{
             passport.authenticate("local")(req, res, function(){
                 req.flash("success", "Welcome " + student.username);
+                Guide.findOne({guideNo : req.body.guideNo}, function(err, guide){
+                    if(err||!guide){
+                        console.log(err)
+                    }else{
+                        console.log(guide);
+                        guide.students.push(student._id);
+                        guide.save();
+                        console.log(guide);
+
+                    }
+                })
                 res.redirect("/paymentPortal");
                 // console.log(student)
             });
@@ -308,7 +319,7 @@ app.get("/guide/projects", (req, res)=>{
 //= = = = = = = = = = = = = = = = = = = = = = =  Login = = = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
 
-app.post("/guide/login",middleware.isNotLoggedIn, passport.authenticate("local", {
+app.post("/guide/login",middleware.isNotLoggedIn, passport.authenticate("guidelocal", {
     successRedirect: "/guide/projects",
     failureRedirect: "/guide",
     failureFlash:"Inavlid username or password"
@@ -328,8 +339,16 @@ app.post("/guide/register", middleware.isNotLoggedIn, function(req, res){
             res.redirect("/guide");
             
         } else{
-            passport.authenticate("local")(req, res, function(){
+            passport.authenticate("guidelocal")(req, res, function(){
                 console.log(guide)
+                // Student.findOne({guideNo: req.body.guideNo}, function(err, student){
+                //     if(err||!student){
+                //         console.log(err);
+                //     }else{
+                //         guide.students.push(student._id);
+                //         guide.save()
+                //     }
+                // })
                 req.flash("success", "Welcome " + guide.username);
                 res.redirect("/guide/projects");
                 
