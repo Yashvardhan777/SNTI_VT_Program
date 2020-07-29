@@ -134,26 +134,20 @@ app.get("/", middleware.isNotLoggedIn, (req, res)=>{
 app.get("/projects",middleware.isLoggedIn, (req, res)=>{
     gfs.files.find().toArray((err, files)=>{
         //Check if any files 
-        if(!files||files.length === 0){
-            res.render("studentProject", {files: false, currentUser: currentUser});
-        }else{
-            // files.map(file => {
-            //     if(file.contentType === 'image/jpeg' || file.contentType === "image/png"){
-            //         file.isImage = true;
-            //     }else{
-            //         file.isImage = false;
-            //     }
-            // });
+        
             Student.findById(req.user._id, function(err, currentUser){
                 if(err){
                     console.log(err)
                 }else{        
                     console.log(currentUser)
-                    res.render("studentProject", {files: files, currentUser: currentUser});
+                    if(!files||files.length === 0){
+                        res.render("studentProject", {files: false, currentUser: currentUser});
+                    }else{
+                        res.render("studentProject", {files: files, currentUser: currentUser});
                 }
-            })
+            }
             
-        }
+        })
     })
     // res.render("studentProject")
     // res.send("Welcome home")
