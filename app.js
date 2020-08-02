@@ -34,13 +34,23 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(Student.authenticate()));
-passport.serializeUser(Student.serializeUser());
-passport.deserializeUser(Student.deserializeUser());
+passport.use("studentlocal", new LocalStrategy(Student.authenticate()));
+// passport.serializeUser(Student.serializeUser());
+// passport.deserializeUser(Student.deserializeUser());
 
+app.use(passport.initialize());
+app.use(passport.session());
 passport.use("guidelocal", new LocalStrategy(Guide.authenticate()));
-passport.serializeUser(Guide.serializeUser());
-passport.deserializeUser(Guide.deserializeUser());
+// passport.serializeUser(Guide.serializeUser());
+// passport.deserializeUser(Guide.deserializeUser());
+passport.serializeUser(function(user, done) { 
+    done(null, user);
+  });
+  
+  passport.deserializeUser(function(user, done) {
+    if(user!=null)
+      done(null,user);
+  });
  
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Setting up Flash Message = = = = = = = = = = = = =
@@ -195,23 +205,23 @@ app.post("/projects", middleware.isLoggedIn,upload.single('file'), (req, res)=>{
     
 })
 
-// = = = = = = = = = = = = = = = = = = = = = = =  Render Image in Project = = = = = = = = = = = = = = 
-app.get('/projects/image/:filename', (req, res)=>{
-    gfs.files.findOne({filename: req.params.filename}, (err, file)=>{
-        //Check if any files 
-        if(!file||file.length === 0){
-            console.log("No files found")
-        }
-        //check if image
-        if(file.contentType === 'image/jpeg' || file.contentType === "image/png"){
-            var readstream = gfs.createReadStream(file.filename);
-            readstream.pipe(res);
-        }else{
-            // res.status(404).json({err: "not an image"})
-            console.log("not an image")
-        }
-    })
-}) 
+// // = = = = = = = = = = = = = = = = = = = = = = =  Render Image in Project = = = = = = = = = = = = = = 
+// app.get('/projects/image/:filename', (req, res)=>{
+//     gfs.files.findOne({filename: req.params.filename}, (err, file)=>{
+//         //Check if any files 
+//         if(!file||file.length === 0){
+//             console.log("No files found")
+//         }
+//         //check if image
+//         if(file.contentType === 'image/jpeg' || file.contentType === "image/png"){
+//             var readstream = gfs.createReadStream(file.filename);
+//             readstream.pipe(res);
+//         }else{
+//             // res.status(404).json({err: "not an image"})
+//             console.log("not an image")
+//         }
+//     })
+// }) 
 
 // = = = = = = = = = = = = = = = = = = = = = = =  Delete Project = = = = = = = = = = = = = = = = = 
 
@@ -237,7 +247,7 @@ app.get("/paymentPortal", middleware.isLoggedIn, (req, res)=>{
 //= = = = = = = = = = = = = = = = = = = = = = =  Login = = = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
 
-app.post("/loginStudent",middleware.isNotLoggedIn, passport.authenticate("local", {
+app.post("/loginStudent",middleware.isNotLoggedIn, passport.authenticate("studentlocal", {
     successRedirect: "/projects",
     failureRedirect: "/",
     failureFlash:"Inavlid username or password"
@@ -257,7 +267,7 @@ app.post("/register", middleware.isNotLoggedIn, function(req, res){
             res.redirect("/");
             
         } else{
-            passport.authenticate("local")(req, res, function(){
+            passport.authenticate("studentlocal")(req, res, function(){
                 req.flash("success", "Welcome " + student.username);
                 Guide.findOne({guideNo : req.body.guideNo}, function(err, guide){
                     if(err||!guide){
@@ -295,7 +305,7 @@ app.get("/logout", function(req, res){
 //= = = = = = = = = = = = = = = = = = = = = = =  Home Page = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
 
-app.get("/guide", (req, res)=>{
+app.get("/guide",middleware.isNotLoggedInGuide,  (req, res)=>{
     res.render("guidehome");
 })
 
@@ -304,16 +314,81 @@ app.get("/guide", (req, res)=>{
 //= = = = = = = = = = = = = = = = = = = = = = =  Projects = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
 
-app.get("/guide/projects", (req, res)=>{
-    res.render("guideProject")
+app.get("/guide/projects", middleware.isLoggedInGuide,(req, res)=>{
+    const studentList = new Array();
+    var guide = req.user;
+    guide.students.forEach(studentId => {
+        console.log(studentId);
+        Student.findById(studentId, (err, studentInfo)=>{
+            if(err||!studentInfo){
+                console.log(err);
+            }else{
+                // console.log(studentInfo);
+                studentList.push(studentInfo);
+                // console.log(studentList);
+                
+            }
+        })
+    });
+
+    gfs.files.find().toArray((err, files)=>{
+        //Check if any files
+        Guide.findById(req.user._id, function(err, currentGuide){
+            if(err||!currentGuide){
+                console.log("error")
+                console.log(err);
+                console.log("hello")  
+
+            }else{      
+                // console.log(currentGuide);
+                if(!files||files.length === 0){
+                    // console.log(studentList);
+                    res.render("guideProject", {files: false, currentGuide: currentGuide, studentList: studentList});
+                }else{
+                    console.log(studentList);
+                    res.render("guideProject", {files: files, currentGuide: currentGuide, studentList: studentList});
+                }
+            }
+            
+        })
+    })
+    // res.render("guideProject")
 })
+
+//=================================================================================================
+//= = = = = = = = = = = = = = = = = = = = = = =  Download Project = = = = = = = = = = = = = = = = = 
+//=================================================================================================
+
+app.get('/guide/download/:filename', (req, res) => {
+    gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+      // Check if file
+      if (!file || file.length === 0) {
+        return res.status(404).json({
+          err: 'No file exists'
+        });
+      }
+      // File exists
+      res.set('Content-Type', file.contentType);
+      res.set('Content-Disposition', 'attachment; filename="' + file.filename + '"');
+      // streaming from gridfs
+      var readstream = gfs.createReadStream({
+        filename: req.params.filename
+      });
+      //error handling, e.g. file does not exist
+      readstream.on('error', function (err) {
+        console.log('An error occurred!', err);
+        throw err;
+      });
+      readstream.pipe(res);
+    });
+  });
 
 
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Login = = = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
 
-app.post("/guide/login",middleware.isNotLoggedIn, passport.authenticate("guidelocal", {
+app.post("/guide/login",middleware.isNotLoggedInGuide, passport.authenticate("guidelocal", {
     successRedirect: "/guide/projects",
     failureRedirect: "/guide",
     failureFlash:"Inavlid username or password"
@@ -324,7 +399,7 @@ app.post("/guide/login",middleware.isNotLoggedIn, passport.authenticate("guidelo
 //= = = = = = = = = = = = = = = = = = = = = = =  Register = = = = = = = = = = = = = = = = = = = = = 
 //=================================================================================================
 
-app.post("/guide/register", middleware.isNotLoggedIn, function(req, res){
+app.post("/guide/register", middleware.isNotLoggedInGuide, function(req, res){
     var newGuide = new Guide({username: req.body.username, guideNo: req.body.guideNo,students:[]});
     Guide.register(newGuide, req.body.password, function(err, guide){
         if(err || !guide){
@@ -335,14 +410,6 @@ app.post("/guide/register", middleware.isNotLoggedIn, function(req, res){
         } else{
             passport.authenticate("guidelocal")(req, res, function(){
                 console.log(guide)
-                // Student.findOne({guideNo: req.body.guideNo}, function(err, student){
-                //     if(err||!student){
-                //         console.log(err);
-                //     }else{
-                //         guide.students.push(student._id);
-                //         guide.save()
-                //     }
-                // })
                 req.flash("success", "Welcome " + guide.username);
                 res.redirect("/guide/projects");
                 
@@ -357,7 +424,7 @@ app.post("/guide/register", middleware.isNotLoggedIn, function(req, res){
 app.get("/guide/logout", function(req, res){
     req.logOut();
     req.flash("success", "Successfully logged out");
-    res.redirect("/");
+    res.redirect("/guide");
 });
 
 app.listen(3000, () => {

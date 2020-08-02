@@ -6,4 +6,33 @@
     <a href="/guide/logout">
         Logout
     </a>
+    <%console.log("Inside ejs page")%>
+    <%console.log(studentList)%>
+    <%studentList.forEach(function(student){%>
+        <%student.projects.forEach(function(project){%>
+            <%console.log(project)%>
+            <%if(files){%>
+                    <%files.forEach(function(file){%>
+                        <%if(file._id.equals(project.projectId)){%>
+                            <div class="card mb-3" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%=student.username%></h5>
+                                    <h6 class="card-title"><%= project.projectName %></h5>
+                                    <p>File Name: <%= file.filename %></p>
+                                    <p>Content Type: <%= file.contentType %></p>
+                                    <form action="/guide/download/<%= file.filename %>" method="GET">
+                                        <button class="btn btn-success btn-block mt-4">
+                                            Download
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        <%}%>
+                    <%})%>
+            <%}else{%>
+                <p>No Files submitted</p>
+            <%}%>
+        <%})%>
+    <%})%>
+
 <%- include("partials/footer") %>
