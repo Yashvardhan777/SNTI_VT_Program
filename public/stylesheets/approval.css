@@ -1,0 +1,81 @@
+html{
+    height: 100%;
+    /* background: white; */
+}
+
+body{
+    height: 100%;
+    /* background: white; */
+}
+.process{
+    height: 20%;
+}
+
+i{
+    margin-bottom: 20px;
+}
+
+.imp{
+    color: green;
+}
+
+.showLine{
+    background: rgb(139, 156, 122);
+    width: 25px;
+    height: 25px;
+    color: #fff;
+    border-radius: 50%;
+    padding: 5px;
+    color: white;
+}
+
+.showLine::after{
+    content: '';
+    background: rgb(139, 156, 122);
+    height: 5px;
+    width: 405px;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 80px;
+    z-index: -1;
+}
+
+ul{
+    text-align: center;
+    list-style: none;
+    margin: 5% auto 0 auto;
+}
+
+ul li{
+    display: inline-block;
+    width: 400px;
+    position: relative;
+}
+
+ul li:nth-child(3) .showLine{
+    background: darkgreen;
+}
+
+ul li:nth-child(3) .showLine::after{
+    background: darkgreen;
+}
+
+ul li:nth-child(1) .showLine,
+ul li:nth-child(2) .showLine{
+    background: greenyellow;
+}
+
+ul li:nth-child(1) .showLine::after,
+ul li:nth-child(2) .showLine::after{
+    background: greenyellow;
+}
+
+ul li:first-child .showLine::after{
+    width: 205px;
+    left: 200px;
+}
+
+ul li:last-child .showLine::after{
+    width: 205px;
+}
