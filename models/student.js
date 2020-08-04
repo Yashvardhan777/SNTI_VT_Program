@@ -12,11 +12,13 @@ var studentSchema = new mongoose.Schema({
     email       : String,
     guideNo     : String,
     password    : String,
-    projects    : [projectSchema] 
+    projects    : [projectSchema],
+    payment     : Boolean,
+    approval    : Boolean 
 });
 
 studentSchema.plugin(passportLocalMongoose, {
-    selectFields: "username email guide password projects"
+    selectFields: "username email guide password projects payment approval"
 });
 
 module.exports = mongoose.model("Student", studentSchema);

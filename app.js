@@ -239,16 +239,48 @@ app.delete('/projects/:id', (req, res)=>{
 //= = = = = = = = = = = = = = = = = = = = = = =  Payment Portal = = = = = = = = = = = = = = = = =  
 //=================================================================================================
 
-app.get("/paymentPortal", middleware.isLoggedIn, (req, res)=>{
-    res.render("paymentPortal")
+app.get("/student/:id/payment", middleware.isLoggedIn, (req, res)=>{
+    var studentId = req.params.id;
+    Student.findById(studentId, function(err, student){
+        if(err){
+            console.log(err)
+        }else if(!student){
+            console.log("Student Not Found");
+        }else{
+            res.render("paymentPortal", {student: student});
+        }
+    })
+});
+
+app.post("/student/:id/payment", middleware.isLoggedIn, (req, res)=>{
+    var studentId = req.params.id;
+    Student.findById(studentId, function(err, student){
+        if(err){
+            console.log(err)
+        }else if(!student){
+            console.log("Student Not Found");
+        }else{
+            student.payment = true;
+            res.render("paymentPortal", {student: student});
+        }
+    })
 });
 
 //=================================================================================================
-//= = = = = = = = = = = = = = = = = = = = = = =  Payment Portal = = = = = = = = = = = = = = = = =  
+//= = = = = = = = = = = = = = = = = = = = = = =  Guide Approval = = = = = = = = = = = = = = = = =  
 //=================================================================================================
 
-app.get("/approval", middleware.isLoggedIn, (req, res)=>{
-    res.render("guideApproval")
+app.get("/student/:id/approval", middleware.isLoggedIn, (req, res)=>{
+    var studentId = req.params.id;
+    Student.findById(studentId, function(err, student){
+        if(err){
+            console.log(err)
+        }else if(!student){
+            console.log("Student Not Found");
+        }else{
+            res.render("guideApproval", {student: student});
+        }
+    })
 });
 
 //=================================================================================================
@@ -267,31 +299,39 @@ app.post("/loginStudent",middleware.isNotLoggedIn, passport.authenticate("studen
 //=================================================================================================
 
 app.post("/register", middleware.isNotLoggedIn, function(req, res){
-    var newStudent = new Student({username: req.body.username, email: req.body.email, guideNo: req.body.guideNo, projects: []});
-    Student.register(newStudent, req.body.password, function(err, student){
-        if(err || !student){
-            console.log(err);
-            req.flash("error", err.message);
+    // Verifying Guide No.
+    Guide.findOne({guideNo : req.body.guideNo}, function(err, guide){
+        if(err||!guide){
+            console.log("GuideNo. Invalid");
             res.redirect("/");
-            
-        } else{
-            passport.authenticate("studentlocal")(req, res, function(){
-                req.flash("success", "Welcome " + student.username);
-                Guide.findOne({guideNo : req.body.guideNo}, function(err, guide){
-                    if(err||!guide){
-                        console.log(err)
-                    }else{
-                        console.log(guide);
-                        guide.students.push(student._id);
-                        guide.save();
-                        console.log(guide);
+        }else{
+            var newStudent = new Student({username: req.body.username, email: req.body.email, guideNo: req.body.guideNo, projects: [], payment: false, approval: false});
+            Student.register(newStudent, req.body.password, function(err, student){
+                if(err || !student){
+                console.log(err);
+                req.flash("error", err.message);
+                res.redirect("/");
+                
+                } else{
+                    passport.authenticate("studentlocal")(req, res, function(){
+                        req.flash("success", "Welcome " + student.username);
+                        Guide.findOne({guideNo : req.body.guideNo}, function(err, guide){
+                            if(err||!guide){
+                                console.log(err)
+                            }else{
+                                // console.log(guide);
+                                guide.students.push(student._id);
+                                guide.save();
+                                // console.log(guide);
 
-                    }
-                })
-                res.redirect("/paymentPortal");
-                // console.log(student)
+                            }
+                        })
+                        res.redirect("/student/"+ student._id +"/payment");
+                        // console.log(student)
+                    });
+                };
             });
-        };
+        }
     });
 });
 

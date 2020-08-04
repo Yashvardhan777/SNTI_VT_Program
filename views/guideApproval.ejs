@@ -45,9 +45,15 @@
             </li>
             <li>
                 <i class="fas fa-user-check fa-3x imp" style="padding-left: 16px;"></i>
-                <p>
-                    <i class="fas fa-sync-alt showLine"></i>
-                </p>
+                <% if(!student.approval){ %>
+                    <p>
+                        <i class="fas fa-sync-alt showLine"></i>
+                    </p>
+                <% }else{ %>
+                    <p>
+                        <i class="fas fa-check showLine"></i>
+                    </p>
+                <% } %>
                 <p>
                     Guide Approval
                 </p>
@@ -65,7 +71,7 @@
         <a href="/projects">
             Projects
         </a>
-        <a href="/paymentPortal">
+        <a href="/student/<%=student._id%>/payment">
             Temp Go Back
         </a>
     </div>
