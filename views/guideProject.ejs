@@ -2,16 +2,18 @@
     <h1>
         Projects
     </h1>
-
     <a href="/guide/logout">
         Logout
+    </a>
+    <a href="/guide/student/pending" class="btn-btn-primary">
+        Pending Approvals
     </a>
     <%studentList.forEach(function(student){%>
         <%student.projects.forEach(function(project){%>
             <%console.log(project)%>
             <%if(files){%>
                     <%files.forEach(function(file){%>
-                        <%if(file._id.equals(project.projectId) && student.approval{%>
+                        <%if(file._id.equals(project.projectId) && student.approval){%>
                             <div class="card mb-3" style="width: 18rem;">
                                 <div class="card-body">
                                     <h5 class="card-title"><%=student.username%></h5>

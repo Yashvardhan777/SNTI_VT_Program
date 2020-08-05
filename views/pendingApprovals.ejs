@@ -1,0 +1,19 @@
+<%-include("partials/header")%>
+
+<a href="/guide/projects">Go Back</a>
+<br>
+<% studentList.forEach(student =>{ %>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title"><%= student.username %></h5>
+            <form action="/guide/approve/<%= student._id %>" method="post">
+                <button class="btn btn-primary">
+                    Approve
+                </button>
+            </form>
+        </div>
+    </div>
+    
+<% }) %>
+
+<%-include("partials/footer")%>

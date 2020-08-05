@@ -301,7 +301,11 @@ app.post("/loginStudent",middleware.isNotLoggedIn, passport.authenticate("studen
 app.post("/register", middleware.isNotLoggedIn, function(req, res){
     // Verifying Guide No.
     Guide.findOne({guideNo : req.body.guideNo}, function(err, guide){
-        if(err||!guide){
+        if(err){
+            console.log(err);
+            res.redirect("/");
+
+        }else if(!guide){
             console.log("GuideNo. Invalid");
             res.redirect("/");
         }else{
@@ -366,14 +370,11 @@ app.get("/guide/projects", middleware.isLoggedInGuide,(req, res)=>{
     const studentList = new Array();
     var guide = req.user;
     guide.students.forEach(studentId => {
-        console.log(studentId);
         Student.findById(studentId, (err, studentInfo)=>{
             if(err||!studentInfo){
                 console.log(err);
             }else{
-                // console.log(studentInfo);
                 studentList.push(studentInfo);
-                // console.log(studentList);
                 
             }
         })
@@ -383,17 +384,12 @@ app.get("/guide/projects", middleware.isLoggedInGuide,(req, res)=>{
         //Check if any files
         Guide.findById(req.user._id, function(err, currentGuide){
             if(err||!currentGuide){
-                console.log("error")
                 console.log(err);
-                console.log("hello")  
 
             }else{      
-                // console.log(currentGuide);
                 if(!files||files.length === 0){
-                    // console.log(studentList);
                     res.render("guideProject", {files: false, currentGuide: currentGuide, studentList: studentList});
                 }else{
-                    console.log(studentList);
                     res.render("guideProject", {files: files, currentGuide: currentGuide, studentList: studentList});
                 }
             }
@@ -403,6 +399,43 @@ app.get("/guide/projects", middleware.isLoggedInGuide,(req, res)=>{
     // res.render("guideProject")
 })
 
+
+//=================================================================================================
+//= = = = = = = = = = = = = = = = = = = = = = =  Approval = = = = = = = = = = = = = = = = = = = =
+//=================================================================================================
+
+
+app.get("/guide/student/pending", middleware.isLoggedInGuide,(req, res)=>{
+    Student.find({approval: false}, function(err, allStudentsPending){
+        if(err){
+            console.log(err);
+        }else{
+            console.log(allStudentsPending);
+            res.render("pendingApprovals", {studentList: allStudentsPending});
+        }
+    })
+    
+})
+
+app.post("/guide/approve/:id", middleware.isLoggedInGuide, (req, res)=>{
+    var studentId = req.params.id;
+    Student.findById(studentId, function(err, student){
+        if(err){
+            console.log(err)
+        }else if(!student){
+            console.log("Student Not Found");
+        }else{
+            console.log(student);
+            student.approval = true;
+            student.save();
+            console.log(student);
+            
+        }
+
+    res.redirect("/guide/student/pending")
+    })
+    
+})
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Download Project = = = = = = = = = = = = = = = = = 
 //=================================================================================================
