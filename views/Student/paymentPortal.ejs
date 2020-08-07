@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="/stylesheets/main.css">
-    <link rel="stylesheet" href="/stylesheets/approval.css">
+    <link rel="stylesheet" href="/stylesheets/payment.css">
+    
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
     <title>Project</title>
 </head>
@@ -35,17 +36,7 @@
             </li>
             <li>
                 <i class="far fa-credit-card fa-3x imp"></i>
-                <p>
-                    <i class="fas fa-check showLine"></i>
-                </p> 
-                <p>
-                    Payment
-                </p>
-            </li>
-            </li>
-            <li>
-                <i class="fas fa-user-check fa-3x imp" style="padding-left: 16px;"></i>
-                <% if(!student.approval){ %>
+                <% if(!student.payment){ %>
                     <p>
                         <i class="fas fa-sync-alt showLine"></i>
                     </p>
@@ -54,6 +45,17 @@
                         <i class="fas fa-check showLine"></i>
                     </p>
                 <% } %>
+                 
+                <p>
+                    Payment
+                </p>
+            </li>
+            </li>
+            <li>
+                <i class="fas fa-user-check fa-3x imp" style="padding-left: 16px;"></i>
+                <p>
+                    <i class="fas fa-times showLine"></i>
+                </p>
                 <p>
                     Guide Approval
                 </p>
@@ -62,26 +64,33 @@
     </div>
     <div class="jumbotron">
         <h1>
-            Guide Approval
+            Payment Portal
         </h1>
         <a href="/logout">
             Logout
         </a>
         <br>
-        <a href="/projects">
-            Projects
-        </a>
-        <a href="/student/<%=student._id%>/payment">
-            Temp Go Back
-        </a>
     </div>
     
     <br>
 
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus, eius commodi reprehenderit esse, provident assumenda illum temporibus quisquam veritatis, fugiat a saepe! Laborum incidunt asperiores perspiciatis vitae eos maxime ducimus ipsa assumenda distinctio voluptas magnam nam ex voluptatum molestiae aperiam dolor, praesentium placeat itaque laudantium enim vero suscipit explicabo expedita! Minima vitae a rerum repudiandae perspiciatis, tempore dignissimos impedit consequatur atque doloribus, id rem tenetur doloremque iusto adipisci ipsa? Possimus soluta laborum odit numquam quia saepe. Iusto, tenetur nesciunt magni voluptate inventore exercitationem unde quam ab placeat. Odit ab ea, iusto nobis magnam pariatur consequuntur, quae hic animi minus voluptas.</p>
-    <p class="display-1">GUIDE HAS NOT APPROVED</p>
+    <% if(student.payment){ %>
+        <p class="display-1">Already Paid</p>
+        <a href="/student/<%=student._id%>/approval" class="btn btn-primary">Next</a>
+    <% }else{ %>
+        <p class="display-1">Pay up bois</p>
+        <form action="/student/<%=student._id%>/payment" method="post">
+            <button class="btn btn-primary">
+                Pay
+            </button>
+        </form>
+    <% } %>
+    
+<br>
+
+
 
    
 
 
-<%- include("partials/footer") %>
+<%- include("../partials/footer") %>

@@ -35,19 +35,13 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use("studentlocal", new LocalStrategy(Student.authenticate()));
-// passport.serializeUser(Student.serializeUser());
-// passport.deserializeUser(Student.deserializeUser());
-
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use("guidelocal", new LocalStrategy(Guide.authenticate()));
-// passport.serializeUser(Guide.serializeUser());
-// passport.deserializeUser(Guide.deserializeUser());
 passport.serializeUser(function(user, done) { 
     done(null, user);
   });
-  
-  passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function(user, done) {
     if(user!=null)
       done(null,user);
   });
@@ -122,12 +116,9 @@ file: (req, file) => {
 });
 const upload = multer({ storage });
 
-
-
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Student = = = = = = = = = = = = = = = = = = = = = 
 //=================================================================================================
-
 
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Home Page = = = = = = = = = = = = = = = = = = = =  
@@ -151,21 +142,20 @@ app.get("/projects",middleware.isLoggedIn, (req, res)=>{
                 }else{        
                     console.log(currentUser)
                     if(!files||files.length === 0){
-                        res.render("studentProject", {files: false, currentUser: currentUser});
+                        res.render("Student/studentProject", {files: false, currentUser: currentUser});
                     }else{
-                        res.render("studentProject", {files: files, currentUser: currentUser});
+                        res.render("Student/studentProject", {files: files, currentUser: currentUser});
                 }
             }
             
         })
     })
-    // res.render("studentProject")
-    // res.send("Welcome home")
 });
 
 //= = = = = = = = = = = = = = = = = = = = = = =  Create New Project = = = = = = = = = = = = = = = = =  
+
 app.get("/projects/new", middleware.isLoggedIn, (req, res)=>{
-    res.render("createProjects");
+    res.render("Student/createProjects");
 })
 
 //= = = = = = = = = = = = = = = = = = = = = = =  Upload New Project = = = = = = = = = = = = = = = = =  
@@ -178,17 +168,8 @@ app.post("/projects", middleware.isLoggedIn,upload.single('file'), (req, res)=>{
         projectName: req.body.projectName,
         projectId  : file.id
     }
-    // console.log(user);
     user.projects.push(projectDetail);
     console.log(user);
-    // Student.findByIdAndUpdate(req.user._id, req.user.projects = user.projects,function(err, updatedUser){
-    //     if(err){
-    //         console.log(err)
-    //     }else{
-            
-    //         console.log(updatedUser);
-    //     }
-    // })
     Student.findById(req.user._id, function(err, updateUser){
         if(err){
             console.log(err)
@@ -199,29 +180,7 @@ app.post("/projects", middleware.isLoggedIn,upload.single('file'), (req, res)=>{
             res.redirect("/projects");
         }
     })
-
-    // req.user.projects.push(file.id)
-    // console.log(req.user.projects)
-    
 })
-
-// // = = = = = = = = = = = = = = = = = = = = = = =  Render Image in Project = = = = = = = = = = = = = = 
-// app.get('/projects/image/:filename', (req, res)=>{
-//     gfs.files.findOne({filename: req.params.filename}, (err, file)=>{
-//         //Check if any files 
-//         if(!file||file.length === 0){
-//             console.log("No files found")
-//         }
-//         //check if image
-//         if(file.contentType === 'image/jpeg' || file.contentType === "image/png"){
-//             var readstream = gfs.createReadStream(file.filename);
-//             readstream.pipe(res);
-//         }else{
-//             // res.status(404).json({err: "not an image"})
-//             console.log("not an image")
-//         }
-//     })
-// }) 
 
 // = = = = = = = = = = = = = = = = = = = = = = =  Delete Project = = = = = = = = = = = = = = = = = 
 
@@ -233,7 +192,6 @@ app.delete('/projects/:id', (req, res)=>{
         res.redirect("/");
     })
 })
-
 
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Payment Portal = = = = = = = = = = = = = = = = =  
@@ -247,7 +205,7 @@ app.get("/student/:id/payment", middleware.isLoggedIn, (req, res)=>{
         }else if(!student){
             console.log("Student Not Found");
         }else{
-            res.render("paymentPortal", {student: student});
+            res.render("Student/paymentPortal", {student: student});
         }
     })
 });
@@ -261,7 +219,8 @@ app.post("/student/:id/payment", middleware.isLoggedIn, (req, res)=>{
             console.log("Student Not Found");
         }else{
             student.payment = true;
-            res.render("paymentPortal", {student: student});
+            student.save();
+            res.render("Student/paymentPortal", {student: student});
         }
     })
 });
@@ -278,7 +237,7 @@ app.get("/student/:id/approval", middleware.isLoggedIn, (req, res)=>{
         }else if(!student){
             console.log("Student Not Found");
         }else{
-            res.render("guideApproval", {student: student});
+            res.render("Student/guideApproval", {student: student});
         }
     })
 });
@@ -288,10 +247,16 @@ app.get("/student/:id/approval", middleware.isLoggedIn, (req, res)=>{
 //=================================================================================================
 
 app.post("/loginStudent",middleware.isNotLoggedIn, passport.authenticate("studentlocal", {
-    successRedirect: "/projects",
-    failureRedirect: "/",
-    failureFlash:"Inavlid username or password"
+    failureFlash: "Inavlid Username or Password",
+    failureRedirect: "/"
 }), (req, res)=>{
+    if(!req.user.payment){
+        res.redirect("/student/" + req.user._id + "/payment");
+    }else if(!req.user.approval){
+        res.redirect("/student/" + req.user._id + "/approval");
+    }else{
+        res.redirect("/projects");
+    }
 });
 
 //=================================================================================================
@@ -323,15 +288,11 @@ app.post("/register", middleware.isNotLoggedIn, function(req, res){
                             if(err||!guide){
                                 console.log(err)
                             }else{
-                                // console.log(guide);
                                 guide.students.push(student._id);
                                 guide.save();
-                                // console.log(guide);
-
                             }
                         })
                         res.redirect("/student/"+ student._id +"/payment");
-                        // console.log(student)
                     });
                 };
             });
@@ -342,6 +303,7 @@ app.post("/register", middleware.isNotLoggedIn, function(req, res){
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Logout = = = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
+
 app.get("/logout", function(req, res){
     req.logOut();
     req.flash("success", "Successfully logged out");
@@ -352,15 +314,13 @@ app.get("/logout", function(req, res){
 //= = = = = = = = = = = = = = = = = = = = = = =  Guide = = = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
 
-
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Home Page = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
 
 app.get("/guide",middleware.isNotLoggedInGuide,  (req, res)=>{
-    res.render("guidehome");
+    res.render("Guide/guidehome");
 })
-
 
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Projects = = = = = = = = = = = = = = = = = = = =
@@ -388,22 +348,19 @@ app.get("/guide/projects", middleware.isLoggedInGuide,(req, res)=>{
 
             }else{      
                 if(!files||files.length === 0){
-                    res.render("guideProject", {files: false, currentGuide: currentGuide, studentList: studentList});
+                    res.render("Guide/guideProject", {files: false, currentGuide: currentGuide, studentList: studentList});
                 }else{
-                    res.render("guideProject", {files: files, currentGuide: currentGuide, studentList: studentList});
+                    res.render("Guide/guideProject", {files: files, currentGuide: currentGuide, studentList: studentList});
                 }
             }
             
         })
     })
-    // res.render("guideProject")
 })
-
 
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Approval = = = = = = = = = = = = = = = = = = = =
 //=================================================================================================
-
 
 app.get("/guide/student/pending", middleware.isLoggedInGuide,(req, res)=>{
     Student.find({approval: false}, function(err, allStudentsPending){
@@ -411,10 +368,9 @@ app.get("/guide/student/pending", middleware.isLoggedInGuide,(req, res)=>{
             console.log(err);
         }else{
             console.log(allStudentsPending);
-            res.render("pendingApprovals", {studentList: allStudentsPending});
+            res.render("Guide/pendingApprovals", {studentList: allStudentsPending});
         }
     })
-    
 })
 
 app.post("/guide/approve/:id", middleware.isLoggedInGuide, (req, res)=>{
@@ -431,10 +387,8 @@ app.post("/guide/approve/:id", middleware.isLoggedInGuide, (req, res)=>{
             console.log(student);
             
         }
-
     res.redirect("/guide/student/pending")
-    })
-    
+    })    
 })
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Download Project = = = = = = = = = = = = = = = = = 
@@ -463,7 +417,6 @@ app.get('/guide/download/:filename', (req, res) => {
       readstream.pipe(res);
     });
   });
-
 
 //=================================================================================================
 //= = = = = = = = = = = = = = = = = = = = = = =  Login = = = = = = = = = = = = = = = = = = = = = =
