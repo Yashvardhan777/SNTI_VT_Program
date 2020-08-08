@@ -9,7 +9,25 @@
    
 </head>
 <body>
-    <div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="width: auto;">
+        <a class="navbar-brand" href="/">Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+                </li>
+            </ul>
+        <a href="#" class="navbar-right" style="color: white;">Register</a>
+        </div>
+    </nav>
+      
+    <div class="container">
         <% if(error && error.length > 0){ %>
             <div class="alert alert-danger" role="alert">
                 <%= error %>
@@ -21,46 +39,35 @@
             </div>
         <% } %>
     </div>
-    
-    
     <a href="/guide">
         login as a guide
     </a>
-    <div class="container" id="container">
-        
-        <div class="form-container sign-up-container">
-            <form action="/register" method="POST">
-                <h1>Register</h1>
-                <input type="text" placeholder="Name" name="username"/>
-                <input type="email" placeholder="Email" name="email"/>
-                <input type="text" placeholder="Guide Number" name="guideNo">
-                <input type="password" placeholder="Password" name="password"/>
-                <button>Sign Up</button>
-            </form>
-        </div>
-        <div class="form-container sign-in-container">
-            <form action="/loginStudent" method="POST">
-                <h1>Login</h1>
-                <input type="text" placeholder="Name" name="username"/>
-                <input type="password" placeholder="Password" name="password" />
-                <button>Login</button>
-            </form>
-        </div>
-        <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-left">
-                    <h1>Welcome Back!</h1>
-                    <p>To keep connected with us please login with your personal info</p>
-                    <button class="ghost" id="signIn">Login</button>
-                </div>
-                <div class="overlay-panel overlay-right">
-                    <h1>Sign Up!</h1>
-                    <p>Enter your personal details</p>
-                    <button class="ghost" id="signUp">Sign Up</button>
-                </div>
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9" id="home_image">
+                <img src="https://images.unsplash.com/photo-1496247749665-49cf5b1022e9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1053&q=80" alt="">
+            </div>
+            <div class="col-md-3">
+                <form action="/loginStudent" method="POST">
+                    <h1>Login</h1>
+                    <div class="form-group">
+                        <input type="text" placeholder="Name" name="username" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Password" name="password" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary submit">Login</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <script src="/JavaScript/login.js"></script>
+   
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
