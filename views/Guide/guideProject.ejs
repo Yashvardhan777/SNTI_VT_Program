@@ -1,38 +1,102 @@
-<%- include("../partials/header") %>
-    <h1>
-        Projects
-    </h1>
-    <a href="/guide/logout">
-        Logout
-    </a>
-    <a href="/guide/student/pending" class="btn-btn-primary">
-        Pending Approvals
-    </a>
-    <%studentList.forEach(function(student){%>
-        <%student.projects.forEach(function(project){%>
-            <%console.log(project)%>
-            <%if(files){%>
-                    <%files.forEach(function(file){%>
-                        <%if(file._id.equals(project.projectId) && student.approval){%>
-                            <div class="card mb-3" style="width: 18rem;">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%=student.username%></h5>
-                                    <h6 class="card-title"><%= project.projectName %></h5>
-                                    <p>File Name: <%= file.filename %></p>
-                                    <p>Content Type: <%= file.contentType %></p>
-                                    <form action="/guide/download/<%= file.filename %>" method="GET">
-                                        <button class="btn btn-success btn-block mt-4">
-                                            Download
-                                        </button>
-                                    </form>
-                                </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/stylesheets/main.css">
+    <title>Project</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="width: auto;">
+        <a class="navbar-brand" href="/">Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class=" navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#"> Signed in as <%= currentUser.username %></a></li>
+                <li class="nav-item"><a class="nav-link" href="/guide/student/pending">Pending Approvals</a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container ">
+        <% if(error && error.length > 0){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= error %>
+            </div>
+        <% } %>
+        <% if(success && success.length > 0){ %>
+            <div class="alert alert-success" role="alert">
+                <%= success  %>
+            </div>
+        <% } %>
+        
+    <div class="container">
+        <div class="jumbotron">
+            <p class="display-1" style="text-align: center;">
+                Student Projects
+            </p>
+        </div>
+    
+    
+    <div class="row" style="display: flex; flex-wrap: wrap;">
+        <%studentList.forEach(function(student){%>
+            <%if(student.projects.length !=0 && student.approval){%>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Student: <%=student.username%></h5>
+                            <div id="moreInfo" style="display: none;">
+                            <%student.projects.forEach(function(project){%>
+                                <%if(files){%>
+                                        <%files.forEach(function(file){%>
+                                            <%if(file._id.equals(project.projectId) && student.approval){%>
+                                                
+                                                    <h6 class="card-title"><%= project.projectName %></h5>
+                                                    <p>File Name: <%= file.filename %></p>
+                                                    <p>Content Type: <%= file.contentType %></p>
+                                                    <form action="/guide/download/<%= file.filename %>" method="GET">
+                                                        <button class="btn btn-success btn-block mt-4">
+                                                            Download
+                                                        </button>
+                                                    </form>
+                                                    <hr>                                                                                                
+                                            <%}%>
+                                        <%})%>
+                                <%}else{%>
+                                <%}%>
+                            <%})%>
                             </div>
-                        <%}%>
-                    <%})%>
-            <%}else{%>
-                <p>No Files submitted</p>
+                            <%if(student.projects.length != 0){%>
+                                <button class="btn btn-info" onclick="moreLess()" id="myBtn">
+                                    More 
+                                </button> 
+                            <%}%> 
+                        </div>
+                    </div>
+                </div>
             <%}%>
+            
         <%})%>
-    <%})%>
+    </div>
+</div>
 
+    <script>
+        function moreLess(){
+            moreInfo = document.getElementById("moreInfo");
+            myBtn = document.getElementById("myBtn");
+
+            
+
+            if(moreInfo.style.display != "none"){
+                myBtn.innerHTML = "More";
+                moreInfo.style.display = "none";
+            }else{
+                myBtn.innerHTML = "Less";
+                moreInfo.style.display = "inline";
+            }
+        }
+    </script>
 <%- include("../partials/footer") %>

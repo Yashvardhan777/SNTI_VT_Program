@@ -75,10 +75,10 @@
     </div>
     <div class="container">
         <% if(student.payment){ %>
-            <p class="display-4">Already Paid</p>
+            <p class="display-4">Payment Complete</p>
             <a href="/student/<%=student._id%>/approval" class="btn btn-primary btn-block">Next</a>
         <% }else{ %>
-            <p class="display-4">Pay up bois</p>
+            <p class="display-4">Make Payment</p>
             <form action="/student/<%=student._id%>/payment" method="post">
                 <button class="btn btn-primary btn-block">
                     Pay
