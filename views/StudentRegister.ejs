@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="/stylesheets/login.css">
+    <link rel="stylesheet" href="/stylesheets/register.css">
     <title>Project</title>
    
 </head>
@@ -16,7 +16,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class=" navbar-nav ml-auto">
-                    <li class="nav-item"><a href="/register" class="nav-link"> Register </a></li>
+                    <li class="nav-item"><a href="/" class="nav-link"> Login </a></li>
                     <li class="nav-item"><a href="/guide" class="nav-link"> Login as a Guide</a></li>           
             </ul>
         </div>
@@ -38,29 +38,45 @@
 
     
     <div class="container">
-        <div class="row mt-0 pt-0" >
+        <div class="row">
             <div class="col-md-9" id="home_image">
-                <img src="https://images.unsplash.com/photo-1496247749665-49cf5b1022e9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1053&q=80" alt="">  
+                <img src="https://images.unsplash.com/photo-1496247749665-49cf5b1022e9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1053&q=80" alt="">
             </div>
             <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-title display-4">Project Training</div>
-                        <hr>
-                        <div class="card-text">This is a sample student/guide interaction website</div>
-                    </div>
-                </div>
-                <form action="/loginStudent" method="POST">
-                    <div class="display-4">Login</div>
-                    <hr>
+                <form action="/register" method="POST">
+                    <h1>Register</h1>
                     <div class="form-group">
                         <input type="text" placeholder="Name" name="username" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Email Id" name="email" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Institute" name="institute" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Branch" name="branch" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <p class="my-0">Duration: </p>
+                        <input type="radio" name="duration"  value="8 weeks" id="8 weeks" class="my-0" checked>
+                        <label for="8 weeks">8 weeks</label>
+                        <br>
+                        <input type="radio" name="duration"  value="4 weeks" id="4 weeks" class="my-0" >
+                        <label for="4 weeks">4 weeks</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="start" class="my-0">Start date:</label>
+                        <input type="date" id="start" name="startDate" class="my-0">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Guide No." name="guideNo" class="form-control"/>
                     </div>
                     <div class="form-group">
                         <input type="password" placeholder="Password" name="password" class="form-control"/>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-primary submit">Login</button>
+                        <button class="btn btn-primary submit">Register</button>
                     </div>
                 </form>
             </div>

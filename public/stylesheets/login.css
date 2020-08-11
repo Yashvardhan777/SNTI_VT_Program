@@ -1,9 +1,51 @@
+body, html{
+    background: #bdc3c7;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #2c3e50, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #2c3e50, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-size: auto;
+    background-repeat: no-repeat;
+    height: 110%;
+}
+
+
+form{
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    height: 51%;
+}
+
+
+input{
+    margin: 30px auto;
+}
+.card{
+    height: 45%;
+    margin-bottom: 10%;
+    border-radius: 15px;
+
+}
 .container{
     display: grid;
-    padding: auto 0%;
+    margin: 1em auto;
+    margin-top: 2px;
 }
 
 #home_image{
     max-width: 100%;
     overflow: hidden;
+    border-radius: 15px;
+
 }
+img{
+    border-radius: 15px;
+
+}
+
+.jumbotron{
+    background: none;
+    color: white;
+    margin: 0 auto;
+    padding: 0;
+}
+

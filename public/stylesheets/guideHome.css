@@ -1,4 +1,4 @@
- html{
+body, html{
     background: #bdc3c7;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to bottom, #2c3e50, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to bottom, #2c3e50, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
@@ -7,10 +7,26 @@
     height: 100%;
 }
 
-
-form#newProject{
-    margin-top: 30%;
+form{
+    display: block;
 }
 
+input{
+    width: 100%;
+}
+.row{
+    margin: 5% auto;
+}
+.vertical { 
+    border-left: 1px solid #333131; 
+    height: 250px; 
+    position:absolute; 
+    left: 50%;
+    top: 50%; 
+} 
 
+.jumbotron{
+    background: none;
+    text-align: center;
+}
 

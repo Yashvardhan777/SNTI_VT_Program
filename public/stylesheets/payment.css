@@ -1,11 +1,12 @@
+body{
+    background: #bdc3c7;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #2c3e50, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #2c3e50, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-size: auto;
+    background-repeat: no-repeat;
+}
 html{
     height: 100%;
-    /* background: white; */
-}
-
-body{
-    height: 100%;
-    /* background: white; */
 }
 .process{
     height: 20%;
@@ -16,64 +17,77 @@ i{
 }
 
 .imp{
-    color: green;
+    color: white;
 }
 
 .showLine{
     background: rgb(139, 156, 122);
-    width: 25px;
-    height: 25px;
-    color: #fff;
-    border-radius: 50%;
-    padding: 5px;
+    width: 50px;
+    height: 50px;
     color: white;
+    border-radius: 50%;
+    padding: 16px;
+    padding-left: 15px;
+    padding-top: 17px;
+    
 }
 
 .showLine::after{
     content: '';
     background: rgb(139, 156, 122);
-    height: 5px;
+    height: 3px;
     width: 405px;
     display: block;
     position: absolute;
     left: 0;
-    top: 80px;
+    top: 90px;
     z-index: -1;
 }
 
-ul{
+
+.process ul{
     text-align: center;
     list-style: none;
-    margin: 5% auto 0 auto;
+    margin: 2% auto 0 auto;
 }
 
-ul li{
+.process ul li{
     display: inline-block;
     width: 400px;
     position: relative;
 }
 
-ul li:nth-child(2) .showLine{
-    background: darkgreen;
+.process ul li:nth-child(3) .showLine{
+    background: rgb(2, 7, 58);
 }
 
-ul li:nth-child(2) .showLine::after{
-    background: darkgreen;
+.process ul li:nth-child(3) .showLine::after{
+    background: rgb(2, 7, 58);
 }
 
-ul li:nth-child(1) .showLine{
-    background: greenyellow;
+.process ul li:nth-child(1) .showLine,
+.process ul li:nth-child(2) .showLine{
+    background: rgb(6, 89, 104);
 }
 
-ul li:nth-child(1) .showLine::after{
-    background: greenyellow;
+.process ul li:nth-child(1) .showLine::after,
+.process ul li:nth-child(2) .showLine::after{
+    background: rgb(6, 89, 104);
 }
 
-ul li:first-child .showLine::after{
+.process ul li:first-child .showLine::after{
     width: 205px;
     left: 200px;
 }
 
-ul li:last-child .showLine::after{
-    width: 205px;
+.process ul li:last-child .showLine::after{
+    width: 184px;
+}
+
+.container{
+    width: 30%;
+}
+
+.container p{
+    text-align: center;
 }

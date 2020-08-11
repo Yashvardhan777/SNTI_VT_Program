@@ -4,12 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="/stylesheets/main.css">
     <link rel="stylesheet" href="/stylesheets/approval.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
     <title>Project</title>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="width: auto;">
+        <a class="navbar-brand" href="/">Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class=" navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#"> Signed in as <%= student.username %></a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
     <div class="container ">
         <% if(error && error.length > 0){ %>
             <div class="alert alert-danger" role="alert">
@@ -27,7 +38,7 @@
             <li>
                 <i class="fas fa-clipboard-list fa-3x imp"></i>
                 <p>
-                    <i class="fas fa-check showLine"></i>
+                    <i class="fas fa-check fa-lg showLine"></i>
                 </p> 
                 <p>
                     Registration
@@ -36,7 +47,7 @@
             <li>
                 <i class="far fa-credit-card fa-3x imp"></i>
                 <p>
-                    <i class="fas fa-check showLine"></i>
+                    <i class="fas fa-check fa-lg showLine"></i>
                 </p> 
                 <p>
                     Payment
@@ -47,11 +58,11 @@
                 <i class="fas fa-user-check fa-3x imp" style="padding-left: 16px;"></i>
                 <% if(!student.approval){ %>
                     <p>
-                        <i class="fas fa-sync-alt showLine"></i>
+                        <i class="fas fa-sync-alt fa-lg showLine"></i>
                     </p>
                 <% }else{ %>
                     <p>
-                        <i class="fas fa-check showLine"></i>
+                        <i class="fas fa-check fa-lg showLine"></i>
                     </p>
                 <% } %>
                 <p>
@@ -60,26 +71,16 @@
             </li>
         </ul>
     </div>
-    <div class="jumbotron">
-        <h1>
-            Guide Approval
-        </h1>
-        <a href="/logout">
-            Logout
-        </a>
-        <br>
-        <a href="/projects">
-            Projects
-        </a>
-        <a href="/student/<%=student._id%>/payment">
-            Temp Go Back
-        </a>
+    <div class="container">
+        <p class="display-3">
+            Guide Approval is pending
+            <span class="loading">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </p>
     </div>
-    
-    <br>
-
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus, eius commodi reprehenderit esse, provident assumenda illum temporibus quisquam veritatis, fugiat a saepe! Laborum incidunt asperiores perspiciatis vitae eos maxime ducimus ipsa assumenda distinctio voluptas magnam nam ex voluptatum molestiae aperiam dolor, praesentium placeat itaque laudantium enim vero suscipit explicabo expedita! Minima vitae a rerum repudiandae perspiciatis, tempore dignissimos impedit consequatur atque doloribus, id rem tenetur doloremque iusto adipisci ipsa? Possimus soluta laborum odit numquam quia saepe. Iusto, tenetur nesciunt magni voluptate inventore exercitationem unde quam ab placeat. Odit ab ea, iusto nobis magnam pariatur consequuntur, quae hic animi minus voluptas.</p>
-    <p class="display-1">GUIDE HAS NOT APPROVED</p>
 
    
 

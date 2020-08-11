@@ -263,6 +263,10 @@ app.post("/loginStudent",middleware.isNotLoggedIn, passport.authenticate("studen
 //= = = = = = = = = = = = = = = = = = = = = = =  Register = = = = = = = = = = = = = = = = = = = = = 
 //=================================================================================================
 
+app.get("/register", middleware.isNotLoggedIn, function(req, res){
+    res.render("StudentRegister");
+})
+
 app.post("/register", middleware.isNotLoggedIn, function(req, res){
     // Verifying Guide No.
     Guide.findOne({guideNo : req.body.guideNo}, function(err, guide){
@@ -274,7 +278,18 @@ app.post("/register", middleware.isNotLoggedIn, function(req, res){
             console.log("GuideNo. Invalid");
             res.redirect("/");
         }else{
-            var newStudent = new Student({username: req.body.username, email: req.body.email, guideNo: req.body.guideNo, projects: [], payment: false, approval: false});
+            var newStudent = new Student({
+                    username: req.body.username, 
+                    email: req.body.email, 
+                    guideNo: req.body.guideNo, 
+                    institute: req.body.institute, 
+                    branch: req.body.branch, 
+                    duration: req.body.duration, 
+                    startDate: req.body.startDate, 
+                    projects: [], 
+                    payment: false, 
+                    approval: false
+                });
             Student.register(newStudent, req.body.password, function(err, student){
                 if(err || !student){
                 console.log(err);

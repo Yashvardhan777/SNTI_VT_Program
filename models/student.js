@@ -11,6 +11,10 @@ var studentSchema = new mongoose.Schema({
     username    : String,
     email       : String,
     guideNo     : String,
+    institute   : String,
+    branch      : String,
+    duration    : String,
+    startDate   : Date,
     password    : String,
     projects    : [projectSchema],
     payment     : Boolean,
@@ -18,7 +22,7 @@ var studentSchema = new mongoose.Schema({
 });
 
 studentSchema.plugin(passportLocalMongoose, {
-    selectFields: "username email guide password projects payment approval"
+    selectFields: "username email guideNo institute branch duration startDate password projects payment approval"
 });
 
 module.exports = mongoose.model("Student", studentSchema);

@@ -1,4 +1,4 @@
- html{
+body, html{
     background: #bdc3c7;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to bottom, #2c3e50, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to bottom, #2c3e50, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
@@ -8,8 +8,33 @@
 }
 
 
-form#newProject{
-    margin-top: 30%;
+form{
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    height: 100%;
+}
+
+
+input{
+    margin: 13px auto;
+}
+
+.container{
+    display: grid;
+    margin: 1em auto;
+    margin-top: 2px;
+}
+
+#home_image{
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 15px;
+
+}
+img{
+    border-radius: 15px;
+
 }
 
 

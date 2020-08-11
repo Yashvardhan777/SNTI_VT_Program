@@ -1,12 +1,18 @@
-html{
+body{
+    background: #bdc3c7;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #2c3e50, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #2c3e50, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-size: auto;
+    background-repeat: no-repeat;
     height: 100%;
-    /* background: white; */
 }
 
-body{
+
+
+html{
     height: 100%;
-    /* background: white; */
 }
+
 .process{
     height: 20%;
 }
@@ -16,66 +22,107 @@ i{
 }
 
 .imp{
-    color: green;
+    color: white;
 }
 
 .showLine{
     background: rgb(139, 156, 122);
-    width: 25px;
-    height: 25px;
-    color: #fff;
-    border-radius: 50%;
-    padding: 5px;
+    width: 50px;
+    height: 50px;
     color: white;
+    border-radius: 50%;
+    padding: 16px;
+    padding-left: 15px;
+    padding-top: 17px;
 }
 
 .showLine::after{
     content: '';
     background: rgb(139, 156, 122);
-    height: 5px;
+    height: 3px;
     width: 405px;
     display: block;
     position: absolute;
     left: 0;
-    top: 80px;
+    top: 90px;
     z-index: -1;
 }
 
-ul{
+.process ul{
     text-align: center;
     list-style: none;
-    margin: 5% auto 0 auto;
+    margin: 2% auto 0 auto;
 }
 
-ul li{
+.process ul li{
     display: inline-block;
     width: 400px;
     position: relative;
 }
 
-ul li:nth-child(3) .showLine{
-    background: darkgreen;
+.process ul li:nth-child(3) .showLine{
+    background: rgb(2, 7, 58);
 }
 
-ul li:nth-child(3) .showLine::after{
-    background: darkgreen;
+.process ul li:nth-child(3) .showLine::after{
+    background: rgb(2, 7, 58);
 }
 
-ul li:nth-child(1) .showLine,
-ul li:nth-child(2) .showLine{
-    background: greenyellow;
+.process ul li:nth-child(1) .showLine,
+.process ul li:nth-child(2) .showLine{
+    background: rgb(6, 89, 104);
 }
 
-ul li:nth-child(1) .showLine::after,
-ul li:nth-child(2) .showLine::after{
-    background: greenyellow;
+.process ul li:nth-child(1) .showLine::after,
+.process ul li:nth-child(2) .showLine::after{
+    background: rgb(6, 89, 104);
 }
 
-ul li:first-child .showLine::after{
+.process ul li:first-child .showLine::after{
     width: 205px;
     left: 200px;
 }
 
-ul li:last-child .showLine::after{
-    width: 205px;
+.process ul li:last-child .showLine::after{
+    width: 184px;
+}
+
+.display-3{
+    margin: 10% auto;
+    text-align: center;
+    padding-left: 30px;
+}
+
+.loading span{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 1px;
+    padding: 1px;
+    background-color: black;
+    display: inline-block;
+    animation-name: dots;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.loading span:nth-child(2){
+    animation-delay: 0.4s;
+}
+
+.loading span:nth-child(3){
+    animation-delay: 0.8s;
+}
+
+@keyframes dots{
+    50%{
+        opacity: 1;
+        transform: scale(1) translateY(15px);
+    }
+   
+    75%{
+        opacity: 1;
+        transform: scale(1) translate(0);
+    }
 }

@@ -4,11 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="/stylesheets/login.css">
+    <link rel="stylesheet" href="/stylesheets/guideHome.css">
     <title>Project</title>
    
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="width: auto;">
+        <a class="navbar-brand" href="/">Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class=" navbar-nav ml-auto">
+                    <li class="nav-item"><a href="/" class="nav-link"> Login </a></li>
+                    <li class="nav-item"><a href="/register" class="nav-link"> Register </a></li>           
+            </ul>
+        </div>
+    </nav>
+
     <div>
         <% if(error && error.length > 0){ %>
             <div class="alert alert-danger" role="alert">
@@ -21,42 +34,45 @@
             </div>
         <% } %>
     </div>
-
-    
-    <a href="/">Go Back</a>
-    <div class="container" id="container">
-        <div class="form-container sign-up-container">
-            <form action="/guide/register" method="POST">
-                <h1>Register</h1>
-                <input type="text" placeholder="Name" name="username"/>
-                <input type="text" placeholder="Guide Number" name="guideNo">
-                <input type="password" placeholder="Password" name="password"/>
-                <button>Sign Up</button>
-            </form>
+    <div class="container">
+        <div class="jumbotron">
+            <p class="display-2">
+                Welcome Guide
+            </p>
+            <hr>
         </div>
-        <div class="form-container sign-in-container">
-            <form action="/guide/login" method="POST">
-                <h1>Login</h1>
-                <input type="text" placeholder="Name" name="username"/>
-                <input type="password" placeholder="Password" name="password" />
-                <button>Login</button>
-            </form>
-        </div>
-        <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-left">
-                    <h1>Welcome Back!</h1>
-                    <p>To keep connected with us please login with your personal info</p>
-                    <button class="ghost" id="signIn">Login</button>
-                </div>
-                <div class="overlay-panel overlay-right">
-                    <h1>Sign Up!</h1>
-                    <p>Enter your personal details</p>
-                    <button class="ghost" id="signUp">Sign Up</button>
-                </div>
+        <div class="row">
+            <div class="col-md-6" style="width: 100%;">
+                <form action="/guide/register" method="POST">
+                    <p class="display-4">Register(Test)</p>
+                    <div class="form-group">
+                        <input type="text" placeholder="Name" name="username"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Guide Number" name="guideNo">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Password" name="password"/>
+                    </div>
+                    <button class="btn btn-primary btn-block">Sign Up</button>
+                </form>
+            </div>
+            <div class="vertical"></div>
+            <div class="col-md-6">
+                <form action="/guide/login" method="POST">
+                    <p class="display-4">Login</p>
+                    <div class="form-group">
+                        <input type="text" placeholder="Name" name="username"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Password" name="password" />
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" style="margin-top: 60px;">Login</button>
+                </form>
             </div>
         </div>
     </div>
-    <script src="/JavaScript/login.js"></script>
+   
 </body>
 </html>

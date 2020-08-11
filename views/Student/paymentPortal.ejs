@@ -4,13 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="/stylesheets/main.css">
     <link rel="stylesheet" href="/stylesheets/payment.css">
     
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
     <title>Project</title>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="width: auto;">
+        <a class="navbar-brand" href="/">Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class=" navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#"> Signed in as <%= student.username %></a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
     <div class="container ">
         <% if(error && error.length > 0){ %>
             <div class="alert alert-danger" role="alert">
@@ -62,29 +73,20 @@
             </li>
         </ul>
     </div>
-    <div class="jumbotron">
-        <h1>
-            Payment Portal
-        </h1>
-        <a href="/logout">
-            Logout
-        </a>
-        <br>
+    <div class="container">
+        <% if(student.payment){ %>
+            <p class="display-4">Already Paid</p>
+            <a href="/student/<%=student._id%>/approval" class="btn btn-primary btn-block">Next</a>
+        <% }else{ %>
+            <p class="display-4">Pay up bois</p>
+            <form action="/student/<%=student._id%>/payment" method="post">
+                <button class="btn btn-primary btn-block">
+                    Pay
+                </button>
+            </form>
+        <% } %>
     </div>
     
-    <br>
-
-    <% if(student.payment){ %>
-        <p class="display-1">Already Paid</p>
-        <a href="/student/<%=student._id%>/approval" class="btn btn-primary">Next</a>
-    <% }else{ %>
-        <p class="display-1">Pay up bois</p>
-        <form action="/student/<%=student._id%>/payment" method="post">
-            <button class="btn btn-primary">
-                Pay
-            </button>
-        </form>
-    <% } %>
     
 <br>
 
