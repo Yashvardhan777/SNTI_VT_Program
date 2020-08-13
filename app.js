@@ -7,6 +7,7 @@ var express                           = require("express"),
     flash                             = require("connect-flash"),
     Student                           = require("./models/student"),
     Guide                             = require("./models/guide"),
+    Feedback                          = require("./models/feedback"),
     middleware                        = require("./middleware/index"),
     path                              = require("path"),
     crypto                            = require("crypto"),
@@ -138,19 +139,42 @@ app.get("/projects",middleware.isLoggedIn, (req, res)=>{
         
             Student.findById(req.user._id, function(err, currentUser){
                 if(err){
-                    console.log(err)
-                }else{        
-                    console.log(currentUser)
-                    if(!files||files.length === 0){
-                        res.render("Student/studentProject", {files: false, currentUser: currentUser});
-                    }else{
-                        res.render("Student/studentProject", {files: files, currentUser: currentUser});
-                }
+                    req.flash('error', err.message);
+                    res.redirect("/");
+                }else if(!currentUser){
+                    req.flash('error', "Student not found");
+                    res.redirect("/");
+                }else{ 
+                    Guide.find({guideNo: currentUser.guideNo}, function(err, guide){
+                        if(err){
+                            req.flash('error', err.message);
+                            res.redirect("/");
+                        }else if(!guide){
+                            req.flash('error', "guide not found");
+                            res.redirect("/");
+                        }else{
+                            Feedback.find({student: currentUser._id}).sort("createdAt").exec(function(err, comments){
+                                if(err){
+                                    req.flash('error', err.message);
+                                    res.redirect("/guide/projects");
+                                }else if(!comments){
+                                    req.flash('error', "comments not found");
+                                    res.redirect("/guide/projects");
+                                }else{
+                                    if(!files||files.length === 0){
+                                        res.render("Student/studentProject", {files: false, currentUser: currentUser,  guide: guide[0], comments: comments});
+                                    }else{
+                                        res.render("Student/studentProject", {files: files, currentUser: currentUser,  guide: guide[0], comments: comments});
+                                    }
+                                }
+                        })
+                    }
+                })
             }
-            
-        })
     })
 });
+})
+
 
 //= = = = = = = = = = = = = = = = = = = = = = =  Create New Project = = = = = = = = = = = = = = = = =  
 
@@ -478,4 +502,102 @@ app.get("/guide/logout", function(req, res){
 
 app.listen(3000, () => {
     console.log("app is online")
+})
+
+//=================================================================================================
+//= = = = = = = = = = = = = = = = = = = = = = =  Feedback = = = = = = = = = = = = = = = = = = = = = 
+//=================================================================================================
+
+app.get("/feedback/:id", (req, res)=>{
+    id = req.params.id;
+    Student.findById(id, function(err, student){
+        if(err){
+            req.flash('error', err.message);
+            res.redirect("/guide/projects");
+        }else if(!student){
+            req.flash('error', "Student not found");
+            res.redirect("/guide/projects");
+        }else{
+            Guide.find({guideNo: student.guideNo}, function(err, guide){
+                if(err){
+                    req.flash('error', err.message);
+                    res.redirect("/guide/projects");
+                }else if(!guide){
+                    req.flash('error', "guide not found");
+                    res.redirect("/guide/projects");
+                }else{
+                    Feedback.find({student: student._id}).sort("createdAt").exec(function(err, comments){
+                        if(err){
+                            req.flash('error', err.message);
+                            res.redirect("/guide/projects");
+                        }else if(!comments){
+                            req.flash('error', "comments not found");
+                            res.redirect("/guide/projects");
+                        }else{
+                            console.log(comments);
+                            res.render("feedback", {student: student, guide: guide[0], comments: comments});
+                        }
+                    })
+                } 
+            })
+        }
+    })
+})
+
+//= = = = = = = = = = = = = = = = = = = = = = =  Guide Post = = = = = = = = = = = = = = = = = = = = = 
+
+app.post("/guide/:guideid/student/:studentid", (req, res)=>{
+    var guideid   = req.params.guideid,
+        studentid = req.params.studentid;
+    Guide.findById(guideid, function(err, guide){
+        if(err){
+            req.flash('error', err.message);
+            res.redirect("/feedback/" + studentid);
+        }else if(!guide){
+            req.flash('error', "guide not found");
+            res.redirect("/feedback/" + studentid);
+        }else{
+            Feedback.create({text: req.body.text, student: studentid, guide: guideid, author: guide.username}, function(err, comment){
+                if(err){
+                    req.flash('error', err.message);
+                    res.redirect("/guide/projects");
+                }else if(!comment){
+                    req.flash('error', "Something went wrong");
+                    res.redirect("/guide/projects");
+                }else{
+                    console.log(comment);
+                    res.redirect("/feedback/" + studentid);
+                }
+            })
+        }
+    })
+})
+
+//= = = = = = = = = = = = = = = = = = = = = = =  Student Post = = = = = = = = = = = = = = = = = = = = = 
+
+app.post("/student/:studentid/guide/:guideid", (req, res)=>{
+    var guideid   = req.params.guideid,
+        studentid = req.params.studentid;
+    Student.findById(studentid, function(err, student){
+        if(err){
+            req.flash('error', err.message);
+            res.redirect("/projects");
+        }else if(!student){
+            req.flash('error', "student not found");
+            res.redirect("/projects");
+        }else{
+            Feedback.create({text: req.body.text, student: studentid, guide: guideid, author: student.username}, function(err, comment){
+                if(err){
+                    req.flash('error', err.message);
+                    res.redirect("/projects");
+                }else if(!comment){
+                    req.flash('error', "Something went wrong");
+                    res.redirect("/projects");
+                }else{
+                    console.log(comment);
+                    res.redirect("/projects");
+                }
+            })
+        }
+    })
 })

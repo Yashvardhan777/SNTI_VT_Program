@@ -48,7 +48,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Student: <%=student.username%></h5>
-                            <div id="moreInfo" style="display: none;">
+                            <div class="moreInfo">
                             <%student.projects.forEach(function(project){%>
                                 <%if(files){%>
                                         <%files.forEach(function(file){%>
@@ -62,18 +62,17 @@
                                                             Download
                                                         </button>
                                                     </form>
-                                                    <hr>                                                                                                
+                                                    <hr> 
+                                                                                                                                                  
                                             <%}%>
                                         <%})%>
                                 <%}else{%>
                                 <%}%>
                             <%})%>
                             </div>
-                            <%if(student.projects.length != 0){%>
-                                <button class="btn btn-info" onclick="moreLess()" id="myBtn">
-                                    More 
-                                </button> 
-                            <%}%> 
+                            <form action="/feedback/<%= student._id %>" method="get">
+                                <button class="btn btn-dark btn-block mt-4">Feedback</button>                             
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -83,20 +82,5 @@
     </div>
 </div>
 
-    <script>
-        function moreLess(){
-            moreInfo = document.getElementById("moreInfo");
-            myBtn = document.getElementById("myBtn");
-
-            
-
-            if(moreInfo.style.display != "none"){
-                myBtn.innerHTML = "More";
-                moreInfo.style.display = "none";
-            }else{
-                myBtn.innerHTML = "Less";
-                moreInfo.style.display = "inline";
-            }
-        }
-    </script>
+    
 <%- include("../partials/footer") %>

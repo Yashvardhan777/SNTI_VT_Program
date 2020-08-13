@@ -1,37 +1,17 @@
- body, html{
+body, html{
     background: #bdc3c7;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to bottom, #2c3e50, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to bottom, #2c3e50, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     background-size: auto;
     background-repeat: no-repeat;
-    height: 200%;
-}
-
-.jumbotron{
-    margin-top: 30px;
-    border: black 2px solid;
-    color: white;
-    background: url("https://images.pexels.com/photos/3785927/pexels-photo-3785927.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
-}
-
-hr{
-    color: white;
-}
-#newProject {
-    margin-top: 30%;
-}
-
-form button{
-    margin-right: -1px;
-    margin-left: -1px;
-    margin-bottom: 30px;
-    
+    height: 130%;
 }
 
 #commentbox{
     padding: 15px;
     background: #152230;
     height: auto;
+    width: 70%;
     margin-top: 3%;
     color: white;
     border: black solid 2px;
@@ -39,11 +19,9 @@ form button{
 }
 
 .form-row {
-    margin: 20px 20px 20px 20px;
+    margin: 20px;
+    
 }
 #commentform{
     border: black solid 2px;
 }
-
-
-
