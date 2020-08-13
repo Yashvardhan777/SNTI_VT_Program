@@ -72,14 +72,19 @@
         </ul>
     </div>
     <div class="container">
-        <p class="display-3">
-            Guide Approval is pending
-            <span class="loading">
-                <span></span>
-                <span></span>
-                <span></span>
-            </span>
-        </p>
+        <% if(student.approval){ %>
+            <p class="display-4 text-center mt-5">Guide approved</p>
+            <a href="/projects" class="btn btn-primary btn-block" style="width: 40%; margin: auto 32% auto 30%;">Next</a>
+        <% }else{ %>
+            <p class="display-3">
+                Guide Approval is pending
+                <span class="loading">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </p>
+        <% } %>
     </div>
 
    
